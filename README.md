@@ -1,6 +1,8 @@
 # javascript-i18n-core
 
-easy way to perform i18n in your javascript project.
+Easy way to perform Internationalization(i18n) and localization in your javascript project.
+
+Live Demo: http://app.essoduke.org/i18n
 
 ## Installation
 
