@@ -50,7 +50,7 @@ var s = i18n.datetime('Date time');
 ### Filename rule
 Filename must be same as language code. e.g. `zh-tw.js`, `zh-cn.js`...
 
-## Example (zh-tw)
+## Examples
 ### String
 ```javascript
 // Use above JSON content.
