@@ -21,29 +21,29 @@
  * THE SOFTWARE.
  *
  * Javascript Internationalization (i18n)
- * easy way to perform i18n to javascript project.
+ * The easy way to perform i18n to your javascript project..
  *
  * @author Essoduke Chang
  * @see http://app.essoduke.org/i18n/
- * @version 1.1
+ * @version 1.0.0
  *
  * Last Modified Tue, 7 January 2014 09:57:20 GMT
  */
 var i18n = (function (window, undefined) {
 
     'use strict';
-    
+
     /*
      * Check the client timezone to adjust DST
      */
     var DST = function () {
-        var rightNow = new Date(), 
+        var rightNow = new Date(),
             temp = '',
             date1 = new Date(rightNow.getFullYear(), 0, 1, 0, 0, 0, 0),
             date2 = new Date(rightNow.getFullYear(), 6, 1, 0, 0, 0, 0),
-            date3, 
-            date4, 
-            hoursDiffStdTime = 0, 
+            date3,
+            date4,
+            hoursDiffStdTime = 0,
             hoursDiffDaylightTime = 0;
         temp = date1.toGMTString();
         date3 = new Date(temp.substring(0, temp.lastIndexOf(" ") - 1));
@@ -53,43 +53,44 @@ var i18n = (function (window, undefined) {
         hoursDiffDaylightTime = (date2 - date4) / (1000 * 60 * 60);
         return (hoursDiffDaylightTime !== hoursDiffStdTime) ? true : false;
     },
-    
+
     //language code
     lang = '',
 
     // language file's path
     path = '',
-    
+
     //localize object
     localize = {},
 
     //default setting
-    setting = { 
-        "DST" : -4,
+    setting = {
+        "UTC" : -4,
         "format": "D, d F Y H:i:s",
         "AM" : "AM",
         "PM": "PM"
     },
-    
+
     //fetch lauguage string in JSON object
     locale = function (langcode) {
 
-        var result = {}, 
+        var result = {},
             xmlhttp = {},
             url = (0 !== path.length ? path.replace(/\/$/, '') + '/' : '') + langcode + '.js';
-        
+
         //jQuery ajax
         if (window.jQuery) {
             jQuery.ajax({
                 url: url,
                 async: false,
-                dataType: 'json',
-                error: function (xhr, status, error) { 
-                    result = {}; 
-                },
-                success: function (resp) { 
-                    result = resp; 
-                }
+                cache: true,
+                dataType: 'JSON'
+            })
+            .fail(function (xhr, status, error) {
+                console.dir(status);
+            })
+            .done(function (resp) {
+                result = resp;
             });
         } else {
         // XMLHttpRequest
@@ -126,7 +127,7 @@ var i18n = (function (window, undefined) {
         }
         return result;
     };
-    
+
     /*
      * Datetime format
      */
@@ -159,13 +160,13 @@ var i18n = (function (window, undefined) {
             }
             localize = locale(lang || (navigator.browserLanguage || navigator.language).toLowerCase());
         },
-        
+
         /*
          * Core of the datetime replace
          */
         datetime: function (d) {
             var set = localize.hasOwnProperty('setting') ? localize.setting : setting,
-                r = set.format ? DateAdd('h', set.DST, d ? new Date(d) : new Date()) : (d ? new Date(d) : new Date());
+                r = set.format ? DateAdd('h', set.UTC, d ? new Date(d) : new Date()) : (d ? new Date(d) : new Date());
             return r.format(set.format);
         },
 
@@ -177,9 +178,9 @@ var i18n = (function (window, undefined) {
                 string = string.toString() || '';
                 var args = arguments,
                     pattern = (args.length > 0) ? new RegExp('%([1-' + args.length.toString() + '])', 'g') : null,
-                    var str = localize.hasOwnProperty(string) ? localize[string] : string;
+                    str = localize.hasOwnProperty(string) ? localize[string] : string;
                 return String(str).replace(pattern, function (match, index) { return args[index]; });
-            } catch (e) {
+            } catch (ignore) {
             }
         }
     };
