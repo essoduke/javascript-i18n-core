@@ -14,3 +14,4 @@
     "Nice to meet you, %1": "很高興認識你，%1",
     "My name is %1, I'm %2 years old": "我的名字是 %1，我今年 %2 歲"
 }
+
