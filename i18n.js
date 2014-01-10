@@ -181,6 +181,7 @@ var i18n = (function (window, undefined) {
                     str = localize.hasOwnProperty(string) ? localize[string] : string;
                 return String(str).replace(pattern, function (match, index) { return args[index]; });
             } catch (ignore) {
+                console.dir(ignore.message);
             }
         }
     };
