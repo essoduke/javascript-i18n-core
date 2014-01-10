@@ -1,6 +1,6 @@
 {
     "setting": {
-        "DST": 8,
+        "UTC": 8,
         "format": "Y 年 m 月 d 日 (D) H:i:s",
         "AM": "上午",
         "PM": "下午"
@@ -14,4 +14,3 @@
     "Nice to meet you, %1": "很高興認識你，%1",
     "My name is %1, I'm %2 years old": "我的名字是 %1，我今年 %2 歲"
 }
-
