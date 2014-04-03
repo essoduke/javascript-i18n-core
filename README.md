@@ -67,13 +67,17 @@ i18n._('Hello %1, Nice to meet you', 'John');
 
 i18n._('My name is %1, I\'m %2 years old', 'Mary', 15); 
 // return 我的名字是 Mary, 我今年 15 歲
+
+i18n._('KEY.ID');
+i18n._('KEY.ID', 'hello');
+// Nested
 ```
 ### Date time
 ```javascript
 i18n.datetime(); 
 // return Current datetime
 
-i18n.datetime('2011/01/01 08:15:23');
+i18n.datetime('2011-01-01 08:15:23');
 // return '2011 年 01 月 01 日 08:15:23' datetime format.
 ```
 ## License
