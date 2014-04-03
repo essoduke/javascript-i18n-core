@@ -46,7 +46,10 @@ var s = i18n.datetime('Date time');
 
     "Hello World": "世界您好！",
     "Hello %1, Nice to meet you": "你好 %1, 很高興認識你",
-    "My name is %1, I\'m %2 years old": "我的名字是 %1, 我今年 %2 歲"
+    "My name is %1, I\'m %2 years old": "我的名字是 %1, 我今年 %2 歲",
+    "KEY": {
+        "ID": "........"
+    }
 }
 ```
 ### Filename rule
