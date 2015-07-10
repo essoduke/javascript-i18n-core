@@ -1,39 +1,19 @@
 /**
- * The MIT License
- * Copyright (c) 2014 Essoduke Chang http://essoduke.org
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
  * Javascript Internationalization (i18n)
  * The easy way to perform i18n to your javascript project..
+ * Copyright (c) 2015 Essoduke Chang http://essoduke.org, Licensed MIT.
  *
  * @author Essoduke Chang
  * @see http://app.essoduke.org/i18n/
- * @version 1.1
+ * @version 1.2
  *
- * Last Modified Thu, 3 April 2014 07:47:04 GMT
+ * Last Modified 2015.07.10.165852
  */
 var i18n = (function (window, undefined) {
 
     'use strict';
 
-    /*
+    /**
      * Check the client timezone to adjust DST
      */
     var DST = function () {
@@ -65,59 +45,61 @@ var i18n = (function (window, undefined) {
 
     //default setting
     setting = {
-        "UTC" : -4,
-        "format": "Y-m-d H:i:s",
-        "AM" : "AM",
-        "PM": "PM"
+        "UTC"    : -4,
+        "format" : "Y-m-d H:i:s",
+        "AM"     : "AM",
+        "PM"     : "PM"
     },
 
     //fetch lauguage string in JSON object
     locale = function (langcode) {
 
-        var result = {},
-            xmlhttp = {},
-            url = (0 !== path.length ? path.replace(/\/$/, '') + '/' : '') + langcode + '.js';
+        var result   = {},
+            xmlhttp  = {},
+            url      = [(0 !== path.length ? path.replace(/\/$/, '') + '/' : ''), langcode, '.js'].join(''),
+            callback = {};
 
         // Use jQuery ajax
         if (window.jQuery) {
             jQuery.ajax({
-                url: url,
-                async: false,
-                cache: true,
-                dataType: 'JSON'
+                'url'     : url,
+                'async'   : false,
+                'cache'   : true,
+                'dataType': 'JSON'
             })
             .fail(function (xhr, status, error) {
-                console.dir(status);
             })
             .done(function (resp) {
                 result = resp;
             });
         } else {
-            // Native XMLHttpRequest
-            var callback = function () {
-                if (xmlhttp.readyState === 4) {
-                    if (xmlhttp.status === 200) {
-                        try {
-                            if ('function' === typeof JSON.parse) {
-                                result = JSON.parse(xmlhttp.responseText);
-                            }
-                        } catch (ignore) {
+            // XMLHttpRequest callback
+            callback = function () {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    try {
+                        if ('function' === typeof JSON.parse) {
+                            result = JSON.parse(xmlhttp.responseText);
                         }
+                    } catch (ignore) {
+                        console.warn(ignore.message);
                     }
                 }
             };
+            // Native XMLHttpRequest
             if (window.XMLHttpRequest) {
                 xmlhttp = new XMLHttpRequest();
                 if (xmlhttp.overrideMimeType) {
                     xmlhttp.overrideMimeType('application/json; charset=UTF-8');
                 }
             } else if (window.ActiveXObject) {
-                var activexName = ['MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'];
-                for (var i = 0; i < activexName.length; i += 1) {
+                var activexName = ['MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'],
+                    i = 0;
+                for (i = 0; i < activexName.length; i += 1) {
                     try {
                         xmlhttp = new ActiveXObject(activexName[i]);
                         break;
                     } catch (ignore) {
+                        console.warn(ignore.message);
                     }
                 }
             }
@@ -141,16 +123,17 @@ var i18n = (function (window, undefined) {
                    Object.prototype.hasOwnProperty.call(obj, property.toString()) :
                    obj.hasOwnProperty(property.toString());
         } catch (ignore) {
+            console.warn(ignore.message);
         }
     }
 
-    /*
+    /**
      * Datetime format
      */
     Date.prototype.format = function (format) {
         var returnStr = '',
-            replace = Date.replaceChars,
-            curChar = '',
+            replace   = Date.replaceChars,
+            curChar   = '',
             i = 0;
         replace.reload();
         for (i = 0; i < format.length; i += 1) {
@@ -160,30 +143,31 @@ var i18n = (function (window, undefined) {
         return returnStr;
     };
 
-    /*
+    /**
      * Datetime function object
-     * @see http://jacwright.com/projects/javascript/date_format (unavailable)
-     * @see http://code.google.com/p/omeglelogger/source/browse/trunk/dateformat.js?spec=svn2&r=2
+     * @see {@link http://jacwright.com/projects/javascript/date_format (unavailable)}
+     * @see {@link http://code.google.com/p/omeglelogger/source/browse/trunk/dateformat.js?spec=svn2&r=2}
      */
     Date.replaceChars = {
+
         reload: function () {
             this.shortMonths = _hasOwnProperty(localize, 'shortMonths') ?
                                localize.shortMonths :
                                ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            this.longMonths = _hasOwnProperty(localize, 'longMonths') ?
-                              localize.longMonths :
-                              ['January','February','March','April','May','June','July','August','September','October','November','December'];
-            this.shortDays = _hasOwnProperty(localize, 'shortDays') ?
-                             localize.shortDays :
-                             ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-            this.longDays = _hasOwnProperty(localize, 'longDays') ?
-                            localize.longDays :
-                            ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+            this.longMonths  = _hasOwnProperty(localize, 'longMonths') ?
+                               localize.longMonths :
+                               ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            this.shortDays   = _hasOwnProperty(localize, 'shortDays') ?
+                               localize.shortDays :
+                               ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            this.longDays    = _hasOwnProperty(localize, 'longDays') ?
+                               localize.longDays :
+                               ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
         },
         shortMonths: [],
-        longMonths: [],
-        shortDays: [],
-        longDays: [],
+        longMonths : [],
+        shortDays  : [],
+        longDays   : [],
         d: function () {
             return (this.getUTCDate() < 10 ? '0' : '') + this.getUTCDate();
         },
@@ -308,7 +292,7 @@ var i18n = (function (window, undefined) {
         }
     };
 
-    /*
+    /**
      * Similar the ASP Dateadd function
      */
     var DateAdd = function (interval, number, date ) {
@@ -321,55 +305,55 @@ var i18n = (function (window, undefined) {
         }
         d = ('object' === typeof d) ? d : date;
         switch (interval) {
-            case 'y':
-                d.setFullYear(d.getFullYear() + number);
-                break;
-            case 'm':
-                d.setMonth(d.getMonth() + number);
-                break;
-            case 'd':
-                d.setDate(d.getDate() + number);
-                break;
-            case 'w':
-                d.setDate(d.getDate() + 7 * number);
-                break;
-            case 'h':
-                d.setHours(d.getHours() + number);
-                break;
-            case 'n':
-                d.setMinutes(d.getMinutes() + number);
-                break;
-            case 's':
-                d.setSeconds(d.getSeconds() + number);
-                break;
-            case 'l':
-                d.setMilliseconds(d.getMilliseconds() + number);
-                break;
+        case 'y':
+            d.setFullYear(d.getFullYear() + number);
+            break;
+        case 'm':
+            d.setMonth(d.getMonth() + number);
+            break;
+        case 'd':
+            d.setDate(d.getDate() + number);
+            break;
+        case 'w':
+            d.setDate(d.getDate() + 7 * number);
+            break;
+        case 'h':
+            d.setHours(d.getHours() + number);
+            break;
+        case 'n':
+            d.setMinutes(d.getMinutes() + number);
+            break;
+        case 's':
+            d.setSeconds(d.getSeconds() + number);
+            break;
+        case 'l':
+            d.setMilliseconds(d.getMilliseconds() + number);
+            break;
         }
         return d;
     };
 
-    /*
+    /**
      * Public functions
      */
     return {
 
-        /*
+        /**
          * i18n setting
          */
         set: function (options) {
-            if (null !== options && 'object' === typeof options) {
-                lang = options.hasOwnProperty('lang') ? options.lang : null;
-                path = options.hasOwnProperty('path') ? options.path : path;
+            if ('object' === typeof options) {
+                lang = _hasOwnProperty(options, 'lang') ? options.lang : null;
+                path = _hasOwnProperty(options, 'path') ? options.path : path;
             }
             localize = locale(lang || (navigator.browserLanguage || navigator.language).toLowerCase());
         },
 
-        /*
+        /**
          * Core of the datetime replace
          */
         datetime: function (d) {
-            var set = localize.hasOwnProperty('setting') ?
+            var set = _hasOwnProperty(localize, 'setting') ?
                       localize.setting :
                       setting,
                 r   = set.format ?
@@ -378,10 +362,10 @@ var i18n = (function (window, undefined) {
             return r.format(set.format);
         },
 
-        /*
+        /**
          * Core of the strings replace
          */
-        _: function (string) {
+        t: function (string) {
             try {
                 string = string.toString() || '';
                 var args = arguments,
@@ -389,15 +373,15 @@ var i18n = (function (window, undefined) {
                               new RegExp('%([1-' + args.length.toString() + '])', 'g') :
                               null,
                     str = '',
-                    array = -1 !== string.indexOf('.') ?
+                    array = ~string.indexOf('.') ?
                             string.split(/\./gi) :
                             string;
 
                 if ('string' === typeof array) {
-                    str = localize.hasOwnProperty(array) ?
+                    str = _hasOwnProperty(localize, array) ?
                           localize[array] :
                           array;
-                } else {
+                } else if (Object.prototype.toString.call(array) === '[object Array]' && 2 === array.length) {
                     str = _hasOwnProperty(localize, array[0]) ?
                           (
                               _hasOwnProperty(localize[array[0]], array[1]) ?
@@ -415,3 +399,5 @@ var i18n = (function (window, undefined) {
         }
     };
 }(window));
+//#EOF
+
