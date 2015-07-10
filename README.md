@@ -2,7 +2,7 @@
 
 Easy way to perform Internationalization(i18n) and localization in your javascript project.
 
-Live Demo: http://app.essoduke.org/i18n
+Live Demo: http://app.essoduke.org/i18n/
 
 ## Installation
 
@@ -24,7 +24,7 @@ i18n.set({
 ## Usage
 ```javascript
 
-var s = i18n._('LANGUAGE ID');
+var s = i18n.t('LANGUAGE ID');
 var s = i18n.datetime();
 var s = i18n.datetime('Date time');
 
@@ -61,18 +61,18 @@ Filename must be same as language code. e.g. `zh-tw.js`, `zh-cn.js`...
 // Use above JSON content.
 
 // String without variables. 
-i18n._('Hellow World'); 
+i18n.t('Hellow World'); 
 // return 您好世界！
 
 // String with variables.
-i18n._('Hello %1, Nice to meet you', 'John'); 
+i18n.t('Hello %1, Nice to meet you', 'John'); 
 // return 你好 John, 很高興認識你
 
-i18n._('My name is %1, I\'m %2 years old', 'Mary', 15); 
+i18n.t('My name is %1, I\'m %2 years old', 'Mary', 15); 
 // return 我的名字是 Mary, 我今年 15 歲
 
-i18n._('KEY.ID');
-i18n._('KEY.ID', 'hello');
+i18n.t('KEY.ID');
+i18n.t('KEY.ID', 'hello');
 // Nested
 ```
 ### Date time
