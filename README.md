@@ -2,7 +2,7 @@
 
 Easy way to perform Internationalization(i18n) and localization in your javascript project.
 
-Live Demo: http://app.essoduke.org/i18n/
+Live Demo: https://code.essoduke.org/i18n/
 
 ## Installation
 
