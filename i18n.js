@@ -1,10 +1,9 @@
 /**
  * Javascript Internationalization (i18n)
  * The easy way to perform i18n to your javascript project..
- * Copyright (c) 2015 Essoduke Chang http://essoduke.org, Licensed MIT.
  *
  * @author Essoduke Chang
- * @see http://app.essoduke.org/i18n/
+ * @see https://code.essoduke.org/i18n/
  * @version 1.2
  *
  * Last Modified 2015.07.10.165852
