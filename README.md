@@ -39,11 +39,20 @@ let value = i18n._('key');
 ```javascript
 let str = i18n._('key1'); // output: "Key Self"
 let str = i18n._('key1.key_1_2.key_1_2_1'); // output: "MY KEY"
+
+// with variables
+let str = i18n._('hi_there', 'John'); // output: "你好 John, 很高興認識你"
+let str = i18n._('self_intro', 'John', 10); // output: "我的名字是 John, 我今年 10 歲"
 ```
+
 ### change locale
 ```javascript
-// By file path
 i18n.locale('/path/language.json');
+
+// callback
+i18n.locale('/path/file', dict => {
+    // console.log(dict);
+});
 ```
 
 ### Date time
