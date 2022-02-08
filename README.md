@@ -35,9 +35,15 @@ let value = i18n._('key');
 ```
 
 ## Example
+### get string
 ```javascript
 let str = i18n._('key1'); // output: "Key Self"
 let str = i18n._('key1.key_1_2.key_1_2_1'); // output: "MY KEY"
+```
+### change locale
+```javascript
+// By file path
+i18n.locale('/path/language.json');
 ```
 
 ### Date time
