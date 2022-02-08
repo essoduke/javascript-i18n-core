@@ -34,7 +34,7 @@ let value = i18n._('key');
 }
 ```
 
-## Example
+## Examples
 ### get string
 ```javascript
 let str = i18n._('key1'); // output: "Key Self"
@@ -55,11 +55,12 @@ i18n.locale('/path/file', dict => {
 });
 ```
 
-### Date time
+### date time
 ```javascript
 // return Current datetime in defined format.
 i18n.datetime(); 
-// OR ovderide format
+
+// OR define format
 i18n.datetime(FORMAT_STRING);
 
 ```
