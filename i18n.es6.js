@@ -1,85 +1,33 @@
 /**
- * I18N class
+ * javascript-i18n-core
+ * Simply i18n solution for javascript
  *
- * MIT License.
+ * Github: https://github.com/essoduke/javascript-i18n-core
+ * author: essoduke <essoduke@gmail.com>
+ *
+ * (c)2022 MIT License.
  *
  * --Usage--
- * set locale file: i18n.localte('/foo/boo.json');
- * set locale key: i18n.locale('tw') (for static dictionary)
- * get string: i18n._('key') --
- * get string with variables: i18n._('key', variables...)
+ * i18n.set(
+ *     'resource': 'path or language object',
+ *     'locale', 'current language key'
+ * }).init();
  *
- * --Datetime--
- * get formatted date: i18n.datetime()
+ * i18n._('key', 'value');
+ * i18n._('locale', 'key', 'value');
  *
- * --Dictionary--
- * [JSON file]
- * {
- *     "__meta__": { // language META configure
- *         "datetime": (string) "date format string". e.g. "Y-m-d H:i:s"
- *         "timezone": (string) "timezone number" e.g. "8"
- *         "month": (array) Short name of each Day. e.g. ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
- *         "months": (array) Full name of each Month. e.g.  ["January", "Feburary", "March", "April", "May", "June", "July", "August", "Sepetember", "October", "November", "December"],
- *         "day": (array) Short name of each day. e.g. ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
- *         "days": (array) Full name of each day. e.g. ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
- *     },
- *     // Structures
- *     "key": "string"
- *     "key": "string with variables {1}, {2}...{\d}",
- *     "key": {
- *         "_":  "string of current level",
- *         "key 1": "string 1"
- *         "key 2": {
- *             "key 3": "string 3"
- *         }
- *     }
- * }
+ * i18n.init(callback);
+ * // Elements auto translate by current locale
+ * i18n.translate();
+ * // Specified language
+ * i18n.translate('tw');
  */
-
-/**
- * Utilities
- */
-class Utils {
-
-    extend () {
-        // Variables
-        const extended = {};
-        let deep = false;
-        let i = 0;
-        let length = arguments.length;
-
-        // Check if a deep merge
-        if (Object.prototype.toString.call(arguments[0]) === '[object Boolean]') {
-            deep = arguments[0];
-            i += 1;
-        }
-
-        // Merge the object into the extended object
-        const merge = obj => {
-            let prop;
-            for (prop in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, prop)) {
-                    // If deep merge and property is an object, merge properties
-                    extended[prop] = deep && Object.prototype.toString.call(obj[prop]) === '[object Object]' ?
-                                     this.extend(true, extended[prop], obj[prop]) :
-                                     obj[prop];
-                }
-            }
-        };
-
-        // Loop through each object and conduct a merge
-        for (; i < length; i++ ) {
-            const obj = arguments[i];
-            merge(obj);
-        }
-        return extended;
-    }
-}
 /**
  * Date
  */
 class Dates extends Date {
 
+    #version;
     #month;
     #months;
     #days;
@@ -90,6 +38,8 @@ class Dates extends Date {
         super();
 
         const d = this;
+
+        this.#version = 'A.1';
 
         if (opts.hasOwnProperty('day') && opts.hasOwnProperty('days') &&
             opts.hasOwnProperty('month') && opts.hasOwnProperty('months')
@@ -201,11 +151,25 @@ class Dates extends Date {
     }
 }
 // export
-export default class I18N {
+export default new class I18N {
 
-    #utils;
+    #version;
     #date;
     #dict;
+    #props;
+
+    constructor () {
+
+        //
+        this.#version = 'A.1';
+
+        // Private properties
+        this.#props = {
+            'resource': null,
+            'locale': null
+        };
+        return this;
+    }
 
     /**
      * Constructor
@@ -213,16 +177,63 @@ export default class I18N {
      * @param  {object}  Settings to override
      * @constructor
      */
-    constructor (setting = {}) {
 
-        const __setting__ = {};
-
-        this.#utils = new Utils();
-        this.prop   = this.#utils.extend({}, __setting__, setting);
-        //
-        if (this.prop.lang) {
-            this.locale(this.prop.lang);
+    get (key) {
+        if ('undefined' !== typeof this.#props[key]) {
+            return this.#props[key];
         }
+    }
+
+    set (key, value) {
+        // set by key-value pair object
+        if (key instanceof Object && !Array.isArray(key) && null !== key) {
+            for (let k in key) {
+                this.#props[k] = key[k];
+            }
+        } else {
+            this.#props[key] = value;
+        }
+        return this;
+    }
+
+    /**
+     *
+     */
+    init (callback) {
+
+        return this.locale(callback);
+
+    }
+
+    // [data-i18n="key"] {text} or [data-i18n-key]
+    translate (language) {
+
+        const self = this;
+        let locale = self.#props.locale; // keep current language
+        self.#props.locale = language ?? self.#props.locale;
+
+        self.locale(function (dict) {
+            document.querySelectorAll('[data-i18n]').forEach(function (tag) {
+                let k = tag.dataset.i18n, p;
+                try {
+                    p = 'i18nPass' in tag.dataset ? JSON.parse(tag.dataset.i18nPass) : null;
+                    if (null !== p) {
+                        if (p instanceof Object && !Array.isArray(p)) {
+                            tag.innerHTML = self._(k, p);
+                        }
+                    } else {
+                        tag.innerHTML = self._(k);
+                    }
+
+                } catch (ignore) {
+                    console.error(ignore);
+                }
+                //tag.innerHTML = self._(tag.dataset.i18n)
+            });
+            // reset to default language
+            self.#props.locale = locale;
+            console.log(self);
+        });
     }
 
     /**
@@ -232,34 +243,56 @@ export default class I18N {
      * @param  {function}  callback  Callback function while dictionary was loaded (optional).
      * @return {Promise}
      */
-    async locale (path, callback) {
+    async locale (callback) {
+
         const self = this;
+        const res  = self.#props.resource;
+        const locale = self.#props.locale;
         const opts = {
-            headers: new Headers({'Content-Type': 'application/json;charset=utf-8'}),
-            cache: 'force-cache'
+            headers: new Headers({
+                'Content-Type': 'application/json;charset=utf-8'
+            })
         };
-        if (self.prop.hasOwnProperty('dict') && self.prop.dict.hasOwnProperty(path)) {
-            self.#dict = self.prop.dict[path];
-        } else {
-            return await fetch(path, opts)
+
+        // File path
+        if ('string' === typeof res) {
+            await fetch(res, opts)
                 .then(response => response.json())
                 .then(dict => {
-                    self.#dict = dict;
-                    if (dict.hasOwnProperty('__meta__')) {
-                        const m = dict['__meta__'];
-                        if (m.hasOwnProperty('datetime')) {
+
+                    self.#props.resource = dict;
+                    if (locale in dict && '__meta__' in dict[locale]) {
+                        const m = dict[locale]['__meta__'];
+                        if ('undefined' !== typeof m && 'datetime' in m) {
                             self.#date = new Dates(m);
                         }
                     }
                     //
                     if ('function' === typeof callback) {
-                        callback.call(this, dict);
+                        callback.call(this, dict[locale]);
                     }
+
                 })
                 .catch(err => {
                     console.error(err);
                 });
+
+        } else if (res instanceof Object && null !== res) {
+        // internal object
+            if (locale in res && '__meta__' in res[locale]) {
+                const m = res[locale]['__meta__'];
+                if ('undefined' !== typeof m && 'datetime' in m) {
+                    self.#date = new Dates(m);
+                }
+                if ('function' === typeof callback) {
+                    callback.call(this, res[locale]);
+                }
+            }
+        } else {
+            throw new Error('unexcept error');
         }
+
+        return self;
     }
 
     /**
@@ -293,7 +326,7 @@ export default class I18N {
      */
     meta (key) {
         const self = this;
-        if ('__meta__' in self.#dict) {
+        if ('undefined' !== typeof self.#dict && '__meta__' in self.#dict) {
             let m = self.#dict['__meta__'];
             if (m.hasOwnProperty(key)) {
                 return m[key];
@@ -306,18 +339,38 @@ export default class I18N {
     /**
      * Get translation (if not exists return key string)
      *
+     * @param  {string}  arg0  Locale key (Optional)
      * @param  {string}  arg1  Dictionary Key
-     * @param  {mixed}  arg...  The variables to replace by order. (Optional)
+     * @param  {mixed}   arg...  The variables to replace by order. (Optional)
      * @return {string}
      */
     _ () {
 
         const self = this;
-        let o = self.#dict;
-        let t, keys;
+        const locale = self.#props.locale;
+        const res = self.#props.resource;
+        const args = arguments;
+        let key, value;
+        let o, keys;
 
-        if ('undefined' !== typeof arguments[0]) {
-            keys = arguments[0].split(/\./gi);
+        if (locale in res) {
+            o = res[locale];
+        } else {
+            o = res;
+        }
+
+        console.log('args[0]', args[0],  o.hasOwnProperty(args[0]) );
+
+        if (o.hasOwnProperty(args[0])) {
+            key = args[1];
+            value = args[2];
+        } else  {
+            key = args[0];
+            value = args[1];
+        }
+
+        if ('undefined' !== typeof key) {
+            keys = key.split(/\./gi);
         }
 
         keys.forEach(k => {
@@ -326,20 +379,14 @@ export default class I18N {
             }
         });
 
-        const pattern = new RegExp('\\{([1-' + arguments.length.toString() + '])\\}', 'g');
-
-        if ('string' === typeof o && o.length > 0) {
-            t = o;
-        } else if ('object' === typeof o && o.hasOwnProperty('_')) {
-            t = o['_'];
+        // for object
+        if (value instanceof Object && !Array.isArray(value) && null !== value) {
+            for (let ik in value) {
+                let r = new RegExp(`\\{${ik}\\}`, 'gi');
+                o = String(o).replace(r, value[ik]);
+            }
         }
-
-        if ('string' === typeof t) {
-            return String(t).replace(pattern, (match, index) => {
-                return arguments[index];
-            });
-        }
-        return arguments[0];
+        return o;
     }
 }
 //#EOF
