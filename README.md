@@ -37,19 +37,14 @@ let foo = i18n._("anime.japan.detective conan", 2022, 99); // output "2022 Vol.9
 
 ### Change language
 ```javascript
-// Change default language
-i18n.set('locale', 'jp')._("string key");
-i18n._("string key");
+// Change default language 
+i18n.set('locale', 'jp')._("string key"); // string in english
+i18n._("string key"); // string in japanese
 // Get specific language
-i18n._("en", "string key");
-i18n._("string key");
-
-// Output:
-// 1.string in Japanese
-// 2.string in Japanese
-// 3.string in English
-// 4.string in Japanese
+i18n._("en", "string key"); // string in english
+i18n._("string key"); // string in japanese
 ```
+
 ### Auto translate
 ```html
 <div data-i18n="string key">...</div>
