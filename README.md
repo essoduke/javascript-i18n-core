@@ -38,11 +38,11 @@ let foo = i18n._("anime.japan.detective conan", 2022, 99); // output "2022 Vol.9
 ### Change language
 ```javascript
 // Change default language
-console.log(i18n.set('locale', 'jp')._("string key"));
-console.log(i18n._("string key"));
+i18n.set('locale', 'jp')._("string key");
+i18n._("string key");
 // Get specific language
-console.log(i18n._("en", "string key"));
-console.log(i18n._("string key"))
+i18n._("en", "string key");
+i18n._("string key");
 
 // Output:
 // 1.string in Japanese
