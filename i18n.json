@@ -1,0 +1,248 @@
+{
+    "en": {
+        "attack_on_titan": {
+            "a": "On that day, mankind received a grim reminder. We lived in fear of the titans, and were disgraced to live in these cages we called walls.",
+            "b": "If you win, you live, if you lose, you die. If you don't fight, you can't win."
+        },
+        "detective_conan": {
+            "a": "Zero is where everything starts! Nothing would ever be born if we didn’t depart from there!"
+        },
+        "what_is_your_name": "What's your name?",
+        "your_name_is": "I see. your name is {name}",
+        "html": {
+            "nav": {
+                "playground": "Playground",
+                "quick_start": "Quick start",
+                "options": "Options",
+                "usage": "Usage",
+                "variables": "Variables in string",
+                "change_language": "Change language",
+                "auto_translate": "Auto translate",
+                "datetime": "Datetime",
+                "advanced": "Advanced",
+                "language_file": "Language file"
+            },
+            "playground": {
+                "locale": {
+                    "en": "English",
+                    "tw": "Chinese (Traditional)",
+                    "jp": "Japanese"
+                }
+            },
+            "article": {
+                "options": {
+                    "name": "Name",
+                    "type": "Type",
+                    "description": "Description",
+                    "resource": "Language file path or <mark>JSON object</mark>.",
+                    "locale": "Language key",
+                    "i18n_key": "An HTML data-* attribute name which use for <mark>Auto Translate</mark> to get elements. Defaults to <code>i18n</code> (data-i18n).",
+                    "i18n_pass": "An HTML data-* attribute name which use for <mark>Auto Translate</mark> to pass the variables. Defaults to <code>i18n-pass</code> (data-i18n-pass)."
+                },
+                "usage": {
+                    "c1": "Language Example",
+                    "c2": "Set default language to \"English\" and get \"hello\".",
+                    "c3": "Multiple level"
+                },
+                "playground": {
+                    "single": "Single string"
+                },
+                "variables": {
+                    "by_object": "By object",
+                    "by_arguments": "By arguments",
+                    "c1": "It will replace {...} by sequence number.",
+                    "c2": "Set default language (will effects until set again)."
+                },
+                "change_language": {
+                    "c1": "Get specific language without change default language."
+                },
+                "auto_translate": {
+                    "help1": "You could use <code>.translate()</code> to make auto translate for i18n elements.",
+                    "help2": "<b>Auto translate</b> won&apos;t change the default language setting."
+                },
+                "advanced": {
+                    "button": "Get datetime",
+                    "c1": "pass object to resource"
+                },
+                "datetime": {
+                    "c1": "Get current datetime by default format."
+                },
+                "language_file": {
+                    "help1": "<div><mark>JSON</mark> 形式である必要があります。",
+                    "help2": "The <code>\"key\"</code> could be any characters but not contains <kbd>.</kbd> <kbd>&apos;</kbd> and <kbd>&quot;</kbd></code>",
+                    "help3": "The variable&apos;s name in <code>\"Value\"</code> could be any characters and wrapping with bracket <kbd>{</kbd> and <kbd>}</kbd>."
+                }
+            }
+        }
+    },
+    "tw": {
+        "__meta__": {
+            "name": "繁體中文",
+            "datetime": "Y 年 m 月 d 日 (D) H:i:s",
+            "month": ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+            "months": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+            "day": ["一", "二", "三", "四", "五", "六", "日"],
+            "days": ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+            "timezone": 8
+        },
+        "attack_on_titan": {
+            "a": "那一天，人類想起了，曾經被那群傢伙支配的恐懼，以及被囚禁在鳥籠的屈辱。",
+            "b": "戰鬥啊！贏不了就會死！贏了就能活下去！"
+        },
+        "detective_conan": {
+            "a": "零，是一切的開始，不從那裡出發的話，就什麼都不會發生，也什麼都無法達成。"
+        },
+        "what_is_your_name": "請問你的名字是？",
+        "your_name_is": "哦，原來你是 {name}。",
+        "html": {
+            "nav": {
+                "playground": "試試看吧",
+                "quick_start": "快速上手",
+                "options": "參數",
+                "usage": "使用",
+                "variables": "字串內的變數",
+                "change_language": "切換語言",
+                "auto_translate": "自動翻譯",
+                "datetime": "日期時間",
+                "advanced": "進階",
+                "language_file": "語言資源檔案"
+            },
+            "playground": {
+                "locale": {
+                    "en": "英文",
+                    "tw": "正體中文",
+                    "jp": "日文"
+                }
+            },
+            "article": {
+                "options": {
+                    "name": "名稱",
+                    "type": "類型",
+                    "description": "說明",
+                    "resource": "語言檔案路徑或 <mark>JSON object</mark>.",
+                    "locale": "語言主鍵",
+                    "i18n_key": "自動翻譯時用於取得 HTML 元素的 data-* 屬性名稱。預設 <code>i18n</code> (data-i18n).",
+                    "i18n_pass": "自動翻譯時用於傳入字串變數值的 data-* 屬性名稱。預設 <code>i18n-pass</code> (data-i18n-pass)."
+                },
+                "usage": {
+                    "c1": "語系檔案結構",
+                    "c2": "變更預設語言為「English」再取得「hello」。",
+                    "c3": "多層結構"
+                },
+                "playground": {
+                    "single": "單一字串"
+                },
+                "variables": {
+                    "by_object": "以 object 傳入",
+                    "by_arguments": "以參數傳入",
+                    "c1": "會按照大括號的順序（由左而右）逐一替換內容。",
+                    "c2": "變更預設語言（會持續生效直到再次更換）。"
+                },
+                "change_language": {
+                    "c1": "取得指定語言的字串，不會變更預設語言。"
+                },
+                "auto_translate": {
+                    "help1": "可以呼叫 <code>.translate()</code> 自動翻譯 HTML 元素。",
+                    "help2": "<b>Auto translate</b> 不會改變預設的語言。"
+                },
+                "advanced": {
+                    "button": "獲得時間",
+                    "c1": "直接傳入物件"
+                },
+                "datetime": {
+                    "c1": "以自訂的預設格式取得日期時間"
+                },
+                "language_file": {
+                    "help1": "<div>必須是 <code>JSON</code> 格式。</div>",
+                    "help2": "字串<mark>主鍵</mark> 可以是除了 <kbd>.</kbd> <kbd>&apos;</kbd> and <kbd>&quot;</kbd></code> 以外的任意字元。",
+                    "help3": "字串內的<mark>變數名稱</mark>可以是任意字元，並使用大括號 <kbd>{</kbd> 及 <kbd>} 包覆。</kbd>."
+                }
+            }
+        }
+    },
+    "jp": {
+        "__meta__": {
+            "name": "日本語",
+            "datetime": "Y 年 m 月 d 日 (D) H:i:s",
+            "month": ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+            "months": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+            "day": ["月", "火", "水", "木", "金", "土", "日"],
+            "days": ["月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日", "日曜日"],
+            "timezone": 9
+        },
+        "attack_on_titan": {
+            "a": "その日，人類は思い出した，ヤツらに支配されていた恐怖を… 鳥籠の中に囚われていた屈辱を。",
+            "b": "出来なければ、死ぬだけ。でも、勝てば生きる。戦わなければ勝てない！"
+        },
+        "detective_conan": {
+            "a": "０(ゼロ)は全ての始まり！そこから出発しねぇと、何も生まれねぇし…何も達成できねぇ！"
+        },
+        "what_is_your_name": "あなたの名前は何ですか？",
+        "your_name_is": "そうですか。あなたの名前は{name}です。",
+        "html": {
+            "nav": {
+                "playground": "試す",
+                "quick_start": "クイックスタート",
+                "options": "オプション",
+                "usage": "使用法",
+                "variables": "文字列内の変数",
+                "change_language": "言語を変えて",
+                "auto_translate": "自動翻訳",
+                "datetime": "日付時刻",
+                "advanced": "高度なオプション",
+                "language_file": "言語ファイル"
+            },
+            "playground": {
+                "locale": {
+                    "en": "英語",
+                    "tw": "中国語（繁体字）",
+                    "jp": "日本語"
+                }
+            },
+            "article": {
+                "options": {
+                    "name": "名前",
+                    "type": "種類",
+                    "description": "說明",
+                    "resource": "言語ファイルパスまたは <mark>JSON object</mark>。",
+                    "locale": "言語 Key",
+                    "i18n_key": "要素を取得するために<mark>自動変換</mark>に使用する HTML data-* 属性名です。デフォルトは<code>i18n</code> (data-i18n)。",
+                    "i18n_pass": "変数を渡すために<mark>自動変換</mark>に使用する HTML data-* 属性名です。デフォルトは<code>i18n-pass</code> (data-i18n-pass)。"
+                },
+                "usage": {
+                    "c1": "言語の例",
+                    "c2": "デフォルトの言語を「English」に設定し、「hello」を取得します。",
+                    "c3": "多次元配列"
+                },
+                "playground": {
+                    "single": "単一の文字列"
+                },
+                "variables": {
+                    "by_object": "オブジェクトを使って",
+                    "by_arguments": "引数を使って",
+                    "c1": "{variable} をシーケンス番号に置き換えます。",
+                    "c2": "デフォルトの言語を設定します（再度設定するまで有効です）。"
+                },
+                "change_language": {
+                    "c1": "デフォルトの言語を変更せずに特定の言語を取得します。"
+                },
+                "auto_translate": {
+                    "help1": "<code>.translate()</code> を使用して、i18n 要素の自動翻訳を行うことができます。",
+                    "help2": "<b>自動翻訳</b> はデフォルトの言語設定を変更しません。"
+                },
+                "advanced": {
+                    "button": "日時を取得",
+                    "c1": "オブジェクトをリソースに渡す"
+                },
+                "datetime": {
+                    "c1": "デフォルトの形式で現在の日時を取得します。"
+                },
+                "language_file": {
+                    "help1": "<div><code>JSON</code> 形式である必要があります。</div>",
+                    "help2": "key は任意の文字にすることができますが。 <kbd>.</kbd>, <kbd>&apos;</kbd> <kbd>&quot;</kbd> は含まれません。",
+                    "help3": "<code>{Value}</code> 内の変数の名前は、任意の文字で、角かっこ <kbd>{</kbd> および <kbd>}</kbd> で囲むことができます。"
+                }
+            }
+        }
+    }
+}
