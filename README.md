@@ -18,33 +18,62 @@ i18n.set({
 ```
 ## Usage
 ```javascript
-let foo = i18n._("string key");
+// Examples
+{
+    "hello": "WORLD!",
+    "anime" {
+        "japan": {
+            "_": "Japanese Douga",
+            "detective conan": "{year} Vol.{num}",
+            "attack_on_titan": "Attck on Titan"
+        }
+    }
+}    
+
+// basic string
+let foo = i18n._("hello"); // "WORLD!"
 
 // use "." for multiple level
-let foo = i18n._("anime.japan"); // output "Japanese Douga"
-let foo = i18n._("anime.japan.attact_on_titan"); // output "Attact On Titan"
+i18n._("anime.japan"); // "Japanese Douga"
+i18n._("anime.japan.attact_on_titan"); // "Attact On Titan"
 ```
 ### Variables
 ```javascript
+// Examples
+{
+    "anime" {
+        "japan": {
+            "detective conan": "{year} Vol.{num}"
+        }
+    }
+}    
+
 // by object
 const conan = {
     "year": 2022,
     "num": 99
 };
-let foo = i18n._("anime.japan.detective conan", conan); // output "2022 Vol.99"
+i18n._("anime.japan.detective conan", conan); // output "2022 Vol.99"
+
 // by array
-let foo = i18n._("anime.japan.detective conan", [2022, 99]); // output "2022 Vol.99"
+i18n._("anime.japan.detective conan", [2022, 99]); // output "2022 Vol.99"
+
 // by arguments
-let foo = i18n._("anime.japan.detective conan", 2022, 99); // output "2022 Vol.99"
+i18n._("anime.japan.detective conan", 2022, 99); // output "2022 Vol.99"
 ```
 ### Change language
 ```javascript
 // Change default language 
-i18n.set('locale', 'jp')._("string key"); // string in english
-i18n._("string key"); // string in japanese
+i18n.set('locale', 'jp')._("string key"); // output in Japanese
+
 // Get specific language
 i18n._("en", "string key"); // string in english
-i18n._("string key"); // string in japanese
+
+// with variables
+i18n._("en", "anime.japan.detective conan", conan);
+i18n._("en", "anime.japan.detective conan", [2022, 99]);
+i18n._("jp", "anime.japan.detective conan", 2022, 99);
+
 ```
 ### Auto translate
 ```html
@@ -72,8 +101,10 @@ button.addEventListener("click", function () {
 ```javascript
 // Datetime of default format
 let foo = i18n.now();
+
 // Format in specific language
 let foo = i18n.now('language key');
+
 // Custom format
 let foo = i18n.now('language key', 'format');
 ```
