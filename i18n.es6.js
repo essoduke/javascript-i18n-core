@@ -241,12 +241,11 @@ export default new class I18N {
             document.querySelectorAll(`[data-${__key}]`).forEach(tag => {
                 try {
                     let key = tag.dataset[__key];
-                    let params = tag.dataset[__pass];
-                    if (isJSON(params)) {
-                        let p = __pass in tag.dataset ? JSON.parse(tag.dataset[__pass]) : null;
-                        tag.innerHTML = self._(key, p);
+                    if (__pass in tag.dataset) {
+                        let params = tag.dataset[__pass];
+                        tag.innerHTML = self._(key, isJSON(params)? JSON.parse(params) : params);
                     } else {
-                        tag.innerHTML = self._(key, params);
+                        tag.innerHTML = self._(key);
                     }
                 } catch (ignore) {
                     console.error(ignore);
