@@ -1,64 +1,184 @@
 /**
- * javascript-i18n-core
- * Simply i18n solution for javascript
+ * Javascript-i18n-core
+ * Simple i18n solution for javascript
  *
  * Github: https://github.com/essoduke/javascript-i18n-core
+ * Demo:   https://code.essoduke.org/i18n
  * author: essoduke <essoduke@gmail.com>
  *
- * (c)2022 MIT License.
- *
- * --Usage--
- * i18n.set(
- *     'resource': 'path or language object',
- *     'locale', 'current language key'
- * }).init();
- *
- * i18n._('key', 'value');
- * i18n._('locale', 'key', 'value');
- *
- * i18n.init(callback);
- * // Elements auto translate by current locale
- * i18n.translate();
- * // Specified language
- * i18n.translate('tw');
+ * MIT License.
  */
-// export
+
+/** check is Object */
+const isObject = obj => obj instanceof Object && !Array.isArray(obj) && null !== obj;
+/** check if JSON string */
+const isJSON = (item) => {
+    item = typeof item !== 'string' ? JSON.stringify(item) : item;
+    try {
+        item = JSON.parse(item);
+    } catch (e) {
+        return false;
+    }
+    return (item instanceof Object && null !== item) ? true : false;
+}
+/**
+ * Extends Date
+ */
+class IDate extends Date {
+
+    #day;
+    #days;
+    #month;
+    #months;
+    #meta;
+
+    constructor (res) {
+
+        super();
+
+        // set to UTC
+        this.setFullYear(this.getUTCFullYear());
+        this.setMonth(this.getUTCMonth());
+        this.setDate(this.getUTCDate());
+        this.setHours(this.getUTCHours());
+        this.setMinutes(this.getUTCMinutes());
+        this.setSeconds(this.getUTCSeconds());
+
+        if (isObject(res) && '__meta__' in res) {
+            const meta = res['__meta__'];
+            if (meta) {
+                this.#meta = meta;
+                this.#day = 'day' in meta ? meta.day : undefined;
+                this.#days = 'days' in meta ? meta.days : undefined;
+                this.#month = 'month' in meta ? meta.month : undefined;
+                this.#months = 'months' in meta ? meta.months : undefined;
+            }
+        }
+    }
+
+    /** functions */
+    replaceChar () {
+        const self = this;
+        return {
+            d: () => (self.getDate() < 10 ? '0' : '') + self.getDate(),
+            D: () => self.#day ? self.#day[self.getDay()] : '',
+            j: () => self.getDate(),
+            l: () => self.#days ? self.#days[self.getDay()] : '',
+            N: () => self.getDay() + 1,
+            S: () => {
+                return (
+                    self.getDate() % 10 === 1 && self.getDate() !== 11 ?
+                    'st' :
+                    (self.getDate() % 10 === 2 && self.getDate() !== 12 ? 'nd' :
+                        (self.getDate() % 10 === 3 && self.getDate() !== 13 ? 'rd' : 'th')
+                    )
+                );
+            },
+            w: () => self.getDay(),
+            z: () => '',
+            W: () => '',
+            F: () => self.#months[self.getMonth()],
+            m: () => (self.getMonth() < 9 ? '0' : '') + (self.getMonth() + 1),
+            M: () => self.#month[self.getMonth()],
+            n: () => self.getMonth() + 1,
+            t: () => '',
+            L: () => '',
+            o: () => '',
+            Y: () => self.getFullYear(),
+            y: () => ('' + self.getFullYear()).substr(2),
+            B: () => '',
+            g: () => self.getHours() %12 || 12,
+            G: () => self.getHours(),
+            h: () => ((self.getHours() % 12 || 12 ) < 10 ? '0' : '' ) + (self.getHours() %12 || 12),
+            H: () => (self.getHours() < 10 ? '0' : '') + self.getHours(),
+            i: () => (self.getMinutes() < 10 ? '0' : '') + self.getMinutes(),
+            s: () => (self.getSeconds() < 10 ? '0' : '') + self.getSeconds(),
+            e: () => '',
+            I: () => '',
+            O: () => ((-self.getTimezoneOffset() < 0 ? '-' : '+') +
+                     (Math.abs(self.getTimezoneOffset() / 60) < 10 ? '0' : '') +
+                     (Math.abs(self.getTimezoneOffset() / 60)) + '00'),
+            T: () => {
+                const m = this.getMonth();
+                self.setMonth(0);
+                const result = self.toTimeString().replace(/^.+ \(?([^\)]+)\)?$/, '$1');
+                self.setMonth(m);
+                return result;
+            },
+            Z: () => -self.getTimezoneOffset() * 60,
+            c: () => '',
+            r: () => self.toString(),
+            U: () => self.getTime() / 1000
+        }
+    }
+
+    /** Format string convert */
+    format (format) {
+        const self = this;
+        const replace = self.replaceChar();
+        let returnStr = [], curChar;
+
+        try {
+            for (let i = 0; i < format.length; i += 1) {
+                curChar = format.charAt(i);
+                returnStr.push(curChar.length ? (curChar in replace ? replace[curChar].call(self) : curChar) : '');
+            }
+        } catch (ignore) {
+            console.error(ignore);
+        }
+        return returnStr.join('');
+    }
+}
+
+/**
+ * I18N Class
+ *
+ * @class
+ */
 export default new class I18N {
 
-    #version;
     #date;
-    #dict;
     #props;
 
+    /**
+     * I18N
+     *
+     * @constructor
+     */
     constructor () {
 
         //
-        this.#version = 'A.1';
+        this.ver = 'A.2.1';
 
         // Private properties
         this.#props = {
             'resource': null,
-            'locale': null
+            'locale': null,
+            'cache': true,
+            'i18n_key': 'i18n',
+            'i18n_pass': 'i18n-pass'
         };
         return this;
     }
 
     /**
-     * Constructor
+     * Get private property
      *
-     * @param  {object}  Settings to override
-     * @constructor
+     * @param  {Object}  key - Property name
      */
-
     get (key) {
-        if ('undefined' !== typeof this.#props[key]) {
-            return this.#props[key];
-        }
+        return key in this.#props ? this.#props[key] : null;
     }
 
+    /**
+     * Set property
+     *
+     * @param  {string}  key  - Property name
+     * @param  {mixed}  value  - Property value
+     */
     set (key, value) {
         // set by key-value pair object
-        if (key instanceof Object && !Array.isArray(key) && null !== key) {
+        if (isObject(key)) {
             for (let k in key) {
                 this.#props[k] = key[k];
             }
@@ -69,38 +189,68 @@ export default new class I18N {
     }
 
     /**
+     * Initialize
      *
+     * @param  {Function}  callback
      */
     init (callback) {
-
         return this.locale(callback);
-
     }
 
-    // [data-i18n="key"] {text} or [data-i18n-key]
+    /**
+     * Get current datetime
+     *
+     * @param  {string}  language  - Language to translate
+     * @param  {string}  format  - Custom date format
+     * @return  {string}
+     */
+    now (language, format) {
+
+        const d = this.#date;
+        const locale = language ?? this.#props.locale;
+
+        try {
+            const {timezone, datetime} = this.meta(true, locale);
+
+            if (!isNaN(timezone)) {
+                d.setHours(d.getHours() + timezone);
+            }
+            return d.format(format ?? datetime);
+        } catch (ignore) {
+            console.warn(ignore);
+        }
+    }
+
+    /**
+     * Auto translate i18n elements
+     *
+     * @param  {string}  language  Language to translate
+     */
     translate (language) {
 
         const self = this;
         let locale = self.#props.locale; // keep current language
+
+        let __key  = self.#props.i18n_key.replace('data-', '');
+        let __pass = self.#props.i18n_pass.replace('data-', '').replace(/-([a-z])/g, g => g[1].toUpperCase());
+
+        // get locale code
         self.#props.locale = language ?? locale;
 
-        self.locale(function (dict) {
-            document.querySelectorAll('[data-i18n]').forEach(function (tag) {
-                let k = tag.dataset.i18n, p;
+        self.locale(() => {
+            document.querySelectorAll(`[data-${__key}]`).forEach(tag => {
                 try {
-                    p = 'i18nPass' in tag.dataset ? JSON.parse(tag.dataset.i18nPass) : null;
-                    if (null !== p) {
-                        if (p instanceof Object && !Array.isArray(p)) {
-                            tag.innerHTML = self._(k, p);
-                        }
+                    let key = tag.dataset[__key];
+                    let params = tag.dataset[__pass];
+                    if (isJSON(params)) {
+                        let p = __pass in tag.dataset ? JSON.parse(tag.dataset[__pass]) : null;
+                        tag.innerHTML = self._(key, p);
                     } else {
-                        tag.innerHTML = self._(k);
+                        tag.innerHTML = self._(key, params);
                     }
-
                 } catch (ignore) {
                     console.error(ignore);
                 }
-                //tag.innerHTML = self._(tag.dataset.i18n)
             });
             // reset to default language
             self.#props.locale = locale;
@@ -108,32 +258,44 @@ export default new class I18N {
     }
 
     /**
-     * Fetch dictionary file or structure
+     * Fetch resource content
      *
-     * @param  {string}  path  File path or key of dictionary
-     * @param  {function}  callback  Callback function while dictionary was loaded (optional).
+     * @param  {function}  callback
      * @return {Promise}
      */
     async locale (callback) {
 
         const self = this;
-        const res  = self.#props.resource;
+        let res  = self.#props.resource;
         const locale = self.#props.locale;
+        const headers = new Headers({
+            'Content-Type': 'application/json;charset=utf-8'
+        });
+        const cache = self.#props.cache;
         const opts = {
-            headers: new Headers({
-                'Content-Type': 'application/json;charset=utf-8'
-            })
+            'headers': headers
         };
+
+        opts.cache =  cache ? 'force-cache' : 'no-store';
 
         // File path
         if ('string' === typeof res) {
+
+            if (!cache) {
+                res += `?_ts_=${new Date().getTime()}`;
+            }
+
             await fetch(res, opts)
                 .then(response => response.json())
                 .then(dict => {
                     self.#props.resource = dict;
-                    //
-                    if ('function' === typeof callback) {
-                        callback.call(this, dict[locale]);
+                    if (locale in dict) {
+                        // meta
+                        self.#date = new IDate(dict[locale])
+                        //
+                        if ('function' === typeof callback) {
+                            callback.call(this, dict[locale]);
+                        }
                     }
 
                 })
@@ -141,9 +303,12 @@ export default new class I18N {
                     console.error(err);
                 });
 
-        } else if (res instanceof Object && null !== res) {
+        } else if (isObject(res)) {
         // internal object
             if (locale in res) {
+                // meta
+                self.#date = new IDate(res[locale])
+                //
                 if ('function' === typeof callback) {
                     callback.call(this, res[locale]);
                 }
@@ -157,32 +322,33 @@ export default new class I18N {
     /**
      * META info
      *
-     * @param  {string}  key  META key
+     * @param  {string|bool}  key - META key
      * @return {string|object}
      */
     meta (key, lang) {
         const self = this;
         const res  = self.#props.resource;
         const locale = lang ?? self.#props.locale;
+
         if ('undefined' !== typeof res && locale in res) {
             if ('__meta__' in res[locale]) {
                 let m = res[locale]['__meta__'];
-                return key in m ? m[key] : m;
+                return (key in m ? m[key] : m);
             }
         }
     }
 
     /**
-     * Get translation (if not exists return key string)
+     * Get string (if not exists return the key)
      *
-     * i18n._('key', object);
-     * i18n._('key', value, ..n);
-     * i18n._('en', 'key', object);
-     * i18n._('en', 'key', ..n);
+     * i18n._("key");
+     * i18n._("key", object);
+     * i18n._("key", [1, 2,...]);
+     * i18n._("key", "value", ..value);
+     * i18n._("jp", "key", object);
+     * i18n._("en", "key", ..value);
      *
-     * @param  {string}  arg0  Locale key (Optional)
-     * @param  {string}  arg1  Dictionary Key
-     * @param  {mixed}   arg...  The variables to replace by order. (Optional)
+     * @param  {string}  args...
      * @return {string}
      */
     _ () {
@@ -224,18 +390,28 @@ export default new class I18N {
         const pattern = new RegExp('\\{(\\w+)\\}', 'gi');
 
         if (value.length === 0) {
-            o = String(o).replace(pattern, (match, index) => {
-                return value[index];
-            });
+            if (isObject(o)) {
+                o = false;
+            } else {
+                o = String(o).replace(pattern, (match, index) => {
+                    return value[index];
+                });
+            }
         } else {
-            // for object
-            // only object
-            value.forEach((arg) => {
-                if (arg instanceof Object && !Array.isArray(arg) && null !== arg) {
+
+            value.forEach(arg => {
+                // object
+                if (isObject(arg)) {
                     for (let ik in arg) {
                         let r = new RegExp(`\\{${ik}\\}`, 'gi');
                         o = String(o).replace(r, arg[ik]);
                     }
+                } else if (Array.isArray(arg)) {
+                // Array
+                    let s = -1;
+                    o = String(o).replace(pattern, (match, index) => {
+                        return arg[s += 1];
+                    });
                 } else {
                 // others args
                     let s = -1;
@@ -245,9 +421,7 @@ export default new class I18N {
                 }
             });
         }
-
         return o;
-
     }
 }
 //#EOF
