@@ -1,7 +1,8 @@
 # Javascript-i18n-core
 Simple i18n solution for javascript.
 
-Documentation: https://code.essoduke.org/i18n
+Online demo: 
+https://code.essoduke.org/i18n
 
 ## Quick start
 ```javascript
@@ -22,19 +23,20 @@ let foo = i18n._("string key");
 // use "." for multiple level
 let foo = i18n._("anime.japan"); // output "Japanese Douga"
 let foo = i18n._("anime.japan.attact_on_titan"); // output "Attact On Titan"
-
-// Variables
-// By object
+```
+### Variables
+```javascript
+// by object
 const conan = {
     "year": 2022,
     "num": 99
 };
 let foo = i18n._("anime.japan.detective conan", conan); // output "2022 Vol.99"
-
-// By arguments
+// by array
+let foo = i18n._("anime.japan.detective conan", [2022, 99]); // output "2022 Vol.99"
+// by arguments
 let foo = i18n._("anime.japan.detective conan", 2022, 99); // output "2022 Vol.99"
 ```
-
 ### Change language
 ```javascript
 // Change default language 
@@ -44,10 +46,11 @@ i18n._("string key"); // string in japanese
 i18n._("en", "string key"); // string in english
 i18n._("string key"); // string in japanese
 ```
-
 ### Auto translate
 ```html
 <div data-i18n="string key">...</div>
+<div data-i18n-pass="{"name": "value"...}"></div>
+<div data-i18n-pass="[value1, value2...]"></div>
 ```
 ```javascript
 // Initialize
@@ -62,39 +65,38 @@ button.addEventListener("click", function () {
     
     // auto translate in specific language 
     // it won't change the default language setting
-    i18n.translate('jp');
-    
-    // after auto translate, still output in "default language"
-    i18n._("string key"); // output in "English"
+    i18n.translate('jp');    
 });
 ```
-
+### Datetime
+```javascript
+// Datetime of default format
+let foo = i18n.now();
+// Format in specific language
+let foo = i18n.now('language key');
+// Custom format
+let foo = i18n.now('language key', 'format');
+```
 ## Language file example
 ```javascript
 {
-    "en": { // Language key"
+    "Language key": {
+        "__meta__": { // for datetime use.
+            "datetime": "PHP like",
+            "timezone": "UTC offset"
+            "day": ["Mon", "Tue", "Wed"...], // abbr of day
+            "days": ["Monday", "Tuesday", "Wednesday"...], // full name of day
+            "month": ["Jan", "Feb", "Mar"...], // abbr of month
+            "months": ["Janurary", "February", "March"...] // full name of month            
+        },
         // Example {"key": "value"}
-        "hello": "Hello world!",
-        "intro": "Hi, My name is {name}. I'm {age} years-old.",
-        "keyN": {
-            "keyN1": {
-                "KeyN1A": "..."
-            }
-        }
-    },
-    "tw": {
-        "hello": "哈囉，世界！",
-        "intro": "嗨！我的名字是 {name}。我今年 {age} 歲。",
-        "keyN": {
-            "keyN1": {
-                "KeyN1A": "..."
+        "string key": "string", // String
+        "string key": { // object
+            "string key": {
+                "string key": {...}
             }
         }
     }
-    "others": {
-        ...
-    }
-    ...
 }
 ```
 
